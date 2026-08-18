@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a2d70" />
+  <meta name="description" content="Almate.edu.lk PDF footer tool for GCE A/L papers and resources." />
+  <title>Almate PDF Footer Tool</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="top-rule"><span></span></div>
+    <div class="header-inner">
+      <img class="brand-logo" src="assets/logo.png" alt="Almate.edu.lk" />
+      <div class="header-copy">
+        <p class="eyebrow">GCE A/L PDF Utility</p>
+        <h1>Automatic PDF Footer Tool</h1>
+        <p>Add the Almate footer only where the bottom area is clear, keep the original PDF content intact, and download with a clean file name.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card workflow-card" aria-labelledby="uploadHeading">
+      <div class="section-title">
+        <div>
+          <span class="step">01</span>
+          <h2 id="uploadHeading">Paper details & PDF</h2>
+        </div>
+        <span class="privacy-pill">Processed in your browser</span>
+      </div>
+
+      <div class="fields-grid">
+        <label class="field">
+          <span>Year</span>
+          <input id="year" type="text" inputmode="numeric" maxlength="20" placeholder="2025" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>Subject</span>
+          <input id="subject" type="text" maxlength="80" placeholder="SFT" autocomplete="off" />
+        </label>
+        <label class="field">
+          <span>Language</span>
+          <input id="language" type="text" maxlength="80" placeholder="Tamil" autocomplete="off" />
+        </label>
+      </div>
+
+      <label id="dropZone" class="drop-zone" for="pdfFile">
+        <input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden />
+        <div class="upload-icon" aria-hidden="true">PDF</div>
+        <div>
+          <strong>Choose a PDF or drop it here</strong>
+          <span>A4 portrait PDFs work best. The original pages are not converted to images.</span>
+        </div>
+        <button type="button" class="ghost-btn" id="browseBtn">Browse</button>
+      </label>
+
+      <div id="fileMeta" class="file-meta hidden" aria-live="polite"></div>
+      <div class="filename-preview">
+        <span>Output filename</span>
+        <strong id="filenamePreview">2025-SFT-Tamil.pdf</strong>
+      </div>
+
+      <div class="actions">
+        <button id="analyzeBtn" class="secondary-btn" type="button" disabled>Analyze pages</button>
+        <button id="processBtn" class="primary-btn" type="button" disabled>Generate & Download PDF</button>
+      </div>
+    </section>
+
+    <section class="card footer-card" aria-labelledby="footerHeading">
+      <div class="section-title">
+        <div>
+          <span class="step">02</span>
+          <h2 id="footerHeading">Footer used by the system</h2>
+        </div>
+        <span class="size-pill">1800 × 140 px · 180 × 14 mm</span>
+      </div>
+      <div class="footer-preview-shell">
+        <div class="paper-strip">
+          <img src="assets/footer.png" alt="Almate PDF footer preview" />
+        </div>
+      </div>
+      <p class="helper">The footer is centered on A4 pages with a 1.5 mm bottom margin. Its 12.86:1 ratio is intentionally slim enough for typical exam-paper footer space.</p>
+    </section>
+
+    <section class="card results-card" aria-labelledby="resultsHeading">
+      <div class="section-title">
+        <div>
+          <span class="step">03</span>
+          <h2 id="resultsHeading">Page check</h2>
+        </div>
+        <button id="clearBtn" class="text-btn" type="button">Reset</button>
+      </div>
+
+      <div id="emptyResults" class="empty-results">
+        Upload a PDF and select <strong>Analyze pages</strong>. The tool checks the exact area where the footer will be placed and skips pages that already contain content there.
+      </div>
+
+      <div id="progressWrap" class="progress-wrap hidden" aria-live="polite">
+        <div class="progress-row"><span id="progressLabel">Preparing…</span><strong id="progressPercent">0%</strong></div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      </div>
+
+      <div id="summary" class="summary-grid hidden">
+        <div class="stat"><span>Total pages</span><strong id="statTotal">0</strong></div>
+        <div class="stat success"><span>Footer ready</span><strong id="statEligible">0</strong></div>
+        <div class="stat warning"><span>Skipped</span><strong id="statSkipped">0</strong></div>
+        <div class="stat"><span>PDF size</span><strong id="statSize">0 MB</strong></div>
+      </div>
+
+      <div id="pageList" class="page-list hidden"></div>
+      <div id="downloadAgain" class="download-again hidden"></div>
+      <div id="errorBox" class="error-box hidden" role="alert"></div>
+    </section>
+
+    <section class="info-grid">
+      <article class="mini-card">
+        <h3>Quality</h3>
+        <p>The app overlays one PNG onto the original PDF pages. It does not rasterize the page, so source text and images keep their original quality.</p>
+      </article>
+      <article class="mini-card">
+        <h3>Smart skip</h3>
+        <p>A low-resolution render is used only to inspect the footer zone. Pages with detected content in that area are left unchanged.</p>
+      </article>
+      <article class="mini-card">
+        <h3>File size</h3>
+        <p>The footer image is embedded once and reused. Object streams are enabled to limit unnecessary size growth while preserving the PDF.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <strong>Almate.edu.lk</strong>
+    <span>All GCE A/L Papers & Resources</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
